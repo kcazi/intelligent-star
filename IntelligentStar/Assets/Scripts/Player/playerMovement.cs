@@ -3,6 +3,7 @@ using UnityEngine.InputSystem;
 
 public class playerMovement : MonoBehaviour
 {
+
     public float moveSpeed = 5f;
 
     public float jumpForce = 12f;
@@ -23,6 +24,7 @@ public class playerMovement : MonoBehaviour
 
     void Update()
     {
+
         // player isnt pressing a move key
         float direction = 0f;
 
@@ -50,6 +52,16 @@ public class playerMovement : MonoBehaviour
         {
             // if space is released multiply upward velocity by cutmultiplier
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, rb.linearVelocity.y * jumpCutMultiplier);
+        }
+
+        if ((GetComponent<SpriteRenderer>().flipX && (direction == 1f))
+            || (!GetComponent<SpriteRenderer>().flipX && (direction == -1f)))
+        {
+            moveSpeed = 2.5f;
+        }
+        else
+        {
+            moveSpeed = 5f;
         }
 
         // Horizontal movement
