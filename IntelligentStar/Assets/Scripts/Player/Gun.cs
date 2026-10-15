@@ -30,6 +30,8 @@ public class Gun : MonoBehaviour
 
         Vector3 rotation = mousePos - transform.position;
 
+        Vector3 pos = transform.position;
+
         float rotZ = MathF.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg;
 
         //if mousePos is on left of player look left otherwise flip right
@@ -39,10 +41,14 @@ public class Gun : MonoBehaviour
             gunRenderer.flipX = true;
 
             rotZ = rotZ - 180;
+            pos.x = player.transform.position.x + .1f;
+            transform.position = pos;
         } else
         {
             playerRenderer.flipX = false;
             gunRenderer.flipX = false;
+            pos.x = player.transform.position.x + -.1f;
+            transform.position = pos;
     
         }
 
