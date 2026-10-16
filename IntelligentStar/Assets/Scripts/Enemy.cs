@@ -12,7 +12,8 @@ public class Enemy : MonoBehaviour
 
     private void OnCollisonEnter2D(Collider other)
     {
-        //TODO: NOT WORKING ADD COLLIOSON        
+        //TODO: NOT WORKING ADD COLLIOSON  
+        // we have to check the tags with what its colliding with instead otherwise when enemy collide with anything, it will die :)      
         HP -= 1;
         Debug.Log(HP);
     }

@@ -8,6 +8,7 @@ public class BulletScript : MonoBehaviour
     private Rigidbody2D rb;
     public float force;
     public int damage;
+    private float bulletTimer = 5.0f;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -25,6 +26,23 @@ public class BulletScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (bulletTimer <= 0)
+        {
+            DespawnBullet();
+        } else
+        {
+            bulletTimer -= Time.deltaTime;
+        }
+    }
+
+    void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("Bullet Collission BABABAYAYYY");
+        DespawnBullet();
+    }
+
+    private void DespawnBullet()
+    {
+        Destroy(gameObject);
     }
 }
