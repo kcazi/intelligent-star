@@ -66,7 +66,7 @@ public class Gun : MonoBehaviour
         
         if (Mouse.current.leftButton.isPressed && canFire)
         {
-            Debug.Log("Shooting");
+            //Debug.Log("Shooting");
             canFire = false;
             Instantiate(bullet, transform.position, Quaternion.identity);
 
