@@ -1,10 +1,12 @@
+using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class playerMovement : MonoBehaviour
 {
 
-    public float moveSpeed = 5f;
+    public float moveSpeedBase = 5f;
+    public float moveSpeed;
 
     public float jumpForce = 12f;
     public float gravity = 30f;
@@ -24,7 +26,7 @@ public class playerMovement : MonoBehaviour
 
     void Update()
     {
-
+        #region Movement
         // player isnt pressing a move key
         float direction = 0f;
 
@@ -57,20 +59,22 @@ public class playerMovement : MonoBehaviour
         if ((GetComponent<SpriteRenderer>().flipX && (direction == 1f))
             || (!GetComponent<SpriteRenderer>().flipX && (direction == -1f)))
         {
-            moveSpeed = 2.5f;
+            moveSpeed = moveSpeedBase * 0.75f;
         }
         else
         {
-            moveSpeed = 5f;
+            moveSpeed = moveSpeedBase;
         }
 
         // Horizontal movement
         rb.linearVelocity = new Vector2(direction * moveSpeed, rb.linearVelocity.y);
+        #endregion
     }
 
     // gravity for player/creatures/objs
     void FixedUpdate()
     {
+        
         float currentGravity = gravity;
 
         if (rb.linearVelocity.y < 0f)
@@ -101,4 +105,5 @@ public class playerMovement : MonoBehaviour
         // sets false after stops touching ground
         isGrounded = false;
     }
+
 }

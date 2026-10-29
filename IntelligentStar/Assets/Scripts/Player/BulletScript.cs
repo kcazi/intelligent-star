@@ -8,7 +8,7 @@ public class BulletScript : MonoBehaviour
     private Rigidbody2D rb;
     public float force;
     public int damage;
-    private float bulletTimer = 5.0f;
+    private float bulletTimer = 3.0f;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -28,6 +28,7 @@ public class BulletScript : MonoBehaviour
     {
         if (bulletTimer <= 0)
         {
+            Debug.Log("Bullet gone");
             DespawnBullet();
         } else
         {
@@ -38,7 +39,10 @@ public class BulletScript : MonoBehaviour
     void OnCollisionEnter2D(Collision2D collision)
     {
         Debug.Log("Bullet Collission BABABAYAYYY");
-        collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+        if (collision.gameObject.TryGetComponent<Enemy>(out Enemy enemy))
+        {
+            collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);
+        }
         DespawnBullet();
     }
 
