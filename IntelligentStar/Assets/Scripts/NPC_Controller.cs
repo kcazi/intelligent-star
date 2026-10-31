@@ -22,6 +22,7 @@ public class NPC_Controller : MonoBehaviour
     void Start()
     {
         currentState = StateMachine.PATROL;
+        currentNode = AStarManager.instance.FindNearestNode(this.transform.position);
     }
 
     // Update is called once per frame
@@ -37,11 +38,12 @@ public class NPC_Controller : MonoBehaviour
                 break;
         }
         
-        bool playerSeen = Vector2.Distance(transform.position, player.transform.position) < 1.0f;
+        bool playerSeen = Vector2.Distance(transform.position, player.transform.position) < 1.5f;
 
         if (!playerSeen && currentState != StateMachine.PATROL)
         {
             currentState = StateMachine.PATROL;
+            currentNode = AStarManager.instance.FindNearestNode(this.transform.position);
             path.Clear();
         } else if (playerSeen && currentState != StateMachine.ENGAGE)
         {
