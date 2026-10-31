@@ -14,6 +14,8 @@ public class Node : MonoBehaviour
         return gScore + hScore;
     }
 
+    
+
     private void OnDrawGizmos()
     {
         Gizmos.color = Color.blue;
