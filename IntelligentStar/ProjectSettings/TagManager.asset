@@ -7,6 +7,9 @@ TagManager:
   - Enemy
   - Bullet
   - World
+  - DeadPlayer
+  - Environment
+  - Ladder
   layers:
   - Default
   - TransparentFX
@@ -16,8 +19,8 @@ TagManager:
   - UI
   - Ignore Bullet
   - Bullet
-  - 
-  - 
+  - DeadEnemy
+  - Enemy
   - 
   - 
   - 

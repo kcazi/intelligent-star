@@ -1,19 +1,19 @@
 fileFormatVersion: 2
-guid: 01e3a5e3bbddbb64a9090b30600a8c8e
+guid: f3a2539d31905524193b7366357ea363
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1233901530626240613
-    second: armymannoarmsanimation_0
+      213: 111108910565288494
+    second: armymanJumpAnimation_0
   - first:
-      213: 7481692325948002654
-    second: armymannoarmsanimation_1
+      213: -5487499457932297990
+    second: armymanJumpAnimation_1
   - first:
-      213: 1213900306249290030
-    second: armymannoarmsanimation_2
+      213: 6974113158240511568
+    second: armymanJumpAnimation_2
   - first:
-      213: 4089226018562347026
-    second: armymannoarmsanimation_3
+      213: -1244046996402393376
+    second: armymanJumpAnimation_3
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -46,7 +46,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 1
+    filterMode: 0
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -109,89 +109,89 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: armymannoarmsanimation_0
+      name: armymanJumpAnimation_0
       rect:
         serializedVersion: 2
-        x: 7
+        x: 0
         y: 0
-        width: 15
+        width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: b9f463b681d40eee0800000000000000
-      internalID: -1233901530626240613
+      spriteID: e2aef9927fcba8100800000000000000
+      internalID: 111108910565288494
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: armymannoarmsanimation_1
+      name: armymanJumpAnimation_1
       rect:
         serializedVersion: 2
-        x: 39
+        x: 32
         y: 0
-        width: 15
+        width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e5195eed78f44d760800000000000000
-      internalID: 7481692325948002654
+      spriteID: af8fbc8215c78d3b0800000000000000
+      internalID: -5487499457932297990
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: armymannoarmsanimation_2
+      name: armymanJumpAnimation_2
       rect:
         serializedVersion: 2
-        x: 71
+        x: 64
         y: 0
-        width: 15
-        height: 31
+        width: 32
+        height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: e211ab2a5e3a8d010800000000000000
-      internalID: 1213900306249290030
+      spriteID: 056ad4c87f609c060800000000000000
+      internalID: 6974113158240511568
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: armymannoarmsanimation_3
+      name: armymanJumpAnimation_3
       rect:
         serializedVersion: 2
-        x: 103
+        x: 96
         y: 0
-        width: 15
+        width: 32
         height: 32
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 21091b2f569dfb830800000000000000
-      internalID: 4089226018562347026
+      spriteID: 0ee2b8719d14cbee0800000000000000
+      internalID: -1244046996402393376
       vertices: []
       indices: 
       edges: []
@@ -200,7 +200,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 357fe10be94a79d439ade3423b4bc1cc
     internalID: 0
     vertices: []
     indices: 
@@ -208,12 +208,14 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries: []
+      entries:
+      - key: SpriteEditor.SliceSettings
+        value: '{"sliceOnImport":false,"gridCellCount":{"x":4.0,"y":1.0},"gridSpriteSize":{"x":32.0,"y":32.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":2,"keepEmptyRects":false,"isAlternate":false}'
     nameFileIdTable:
-      armymannoarmsanimation_0: -1233901530626240613
-      armymannoarmsanimation_1: 7481692325948002654
-      armymannoarmsanimation_2: 1213900306249290030
-      armymannoarmsanimation_3: 4089226018562347026
+      armymanJumpAnimation_0: 111108910565288494
+      armymanJumpAnimation_1: -5487499457932297990
+      armymanJumpAnimation_2: 6974113158240511568
+      armymanJumpAnimation_3: -1244046996402393376
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
