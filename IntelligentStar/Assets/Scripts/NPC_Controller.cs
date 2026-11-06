@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class NPC_Controller : MonoBehaviour
@@ -8,7 +9,7 @@ public class NPC_Controller : MonoBehaviour
     public List<Node> path = new List<Node>();
 
     public playerMovement player;
-    private float speed = 3f;
+    public float speed = 3f;
 
     public enum StateMachine
     {
@@ -38,6 +39,7 @@ public class NPC_Controller : MonoBehaviour
                 break;
         }
         
+        #region player seen interactions
         bool playerSeen = Vector2.Distance(transform.position, player.transform.position) < 1.5f;
 
         if (!playerSeen && currentState != StateMachine.PATROL)
@@ -50,16 +52,24 @@ public class NPC_Controller : MonoBehaviour
             currentState = StateMachine.ENGAGE;
             path.Clear();
         }
+        #endregion
 
         CreatePath();
     }
 
 
     //Goal Node is nearest to player
+    private Node previousTargetNode;
     void Patrol()
     {
+        Node newTargetNode = AStarManager.instance.FindNearestNode(player.transform.position);
+
         if(path.Count == 0)
         {
+            previousTargetNode = newTargetNode;
+            
+            path.Clear();
+            
             path = AStarManager.instance.GeneratePath(currentNode, AStarManager.instance.FindNearestNode(player.transform.position));
         }
     }
@@ -74,13 +84,12 @@ public class NPC_Controller : MonoBehaviour
     {
         if(path.Count > 0)
         {
-            int x = 0;
-            transform.position = Vector3.MoveTowards(transform.position, new Vector3(path[x].transform.position.x, path[x].transform.position.y, -2), speed * Time.deltaTime);
+            transform.position = Vector3.MoveTowards(transform.position, new Vector3(path[0].transform.position.x, path[0].transform.position.y, -2), speed * Time.deltaTime);
 
-            if(Vector2.Distance(transform.position, path[x].transform.position) < 0.1f)
+            if(Vector2.Distance(transform.position, path[0].transform.position) < 0.1f)
             {
-                currentNode = path[x];
-                path.RemoveAt(x);
+                currentNode = path[0];
+                path.RemoveAt(0);
             }
         }
     }

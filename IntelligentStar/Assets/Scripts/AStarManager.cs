@@ -94,24 +94,6 @@ public class AStarManager : MonoBehaviour
         return foundNode;
     }
 
-    public Node FindFurthestNode(Vector2 position)
-    {
-        Node foundNode = null;
-        float maxDistance = 0;
-
-        foreach(Node node in NodesInScene())
-        {
-            float currentDistance = Vector2.Distance(position, node.transform.position);
-            if(currentDistance > maxDistance)
-            {
-                maxDistance = currentDistance;
-                foundNode = node;
-            }
-        }
-
-        return foundNode;
-    }
-
     public Node[] NodesInScene()
     {
         return FindObjectsByType<Node>();
