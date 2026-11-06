@@ -68,6 +68,8 @@ public class playerMovement : MonoBehaviour
         else
         {
             isClimbing = false;
+            playerAnim.SetBool("isClimbing", false);
+            gravity = gravityBase;
         }
         #endregion
 
@@ -84,10 +86,24 @@ public class playerMovement : MonoBehaviour
             direction = 1f;
         }
 
-        // Only allow regular jumping if we are NOT actively climbing
-        if (Keyboard.current.spaceKey.isPressed && isGrounded && !isClimbing)
+        if (Keyboard.current.spaceKey.wasPressedThisFrame && isGrounded)
         {
+            // Stop climbing
+            isClimbing = false;
+            playerAnim.SetBool("isClimbing", false);
+            playerAnim.speed = 1f;
+
+            // Restore normal gravity
+            gravity = gravityBase;
+
+            // Jump
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
+
+            // Update grounded state
+            isGrounded = false;
+
+            // Play jump animation
+            playerAnim.SetTrigger("Jump");
         }
 
         if (Keyboard.current.spaceKey.wasReleasedThisFrame && rb.linearVelocity.y > 0f)
@@ -172,7 +188,7 @@ public class playerMovement : MonoBehaviour
 
     void OnCollisionExit2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("World") && Keyboard.current.spaceKey.isPressed)
+        if (collision.gameObject.CompareTag("World"))
         {
             isGrounded = false;
         }
