@@ -16,8 +16,8 @@ public class Node : MonoBehaviour
         //if isCorner is true must be added manually
         if (!isCorner)
         {
-            connections.Add(FindNearestLeftNode(this.transform.position));
-            connections.Add(FindNearestRightNode(this.transform.position));   
+           // connections.Add(FindNearestLeftNode(this.transform.position));
+           // connections.Add(FindNearestRightNode(this.transform.position));   
         }
     }
 

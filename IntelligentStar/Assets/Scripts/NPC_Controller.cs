@@ -17,6 +17,30 @@ public class NPC_Controller : MonoBehaviour
         ENGAGE
     }
 
+    public enum JumpType
+    {
+        NOJUMP,
+        UPJUMP,
+        LEFTJUMP,
+        RIGHTJUMP
+    }
+    
+    [Header("Physics Settings")]
+    public Rigidbody2D rb;
+    private Collider2D col;
+    private RaycastHit2D[] hitResults = new RaycastHit2D[5]; 
+    public bool useWorldTagOnly = false; // toggle true for only "World" tagged objects to count as ground
+
+    [Header("Jump Parameters")]
+    public Vector2 upJumpForce = new Vector2(0f, 10f);
+    public Vector2 leftJumpForce = new Vector2(-5f, 8f);
+    public Vector2 rightJumpForce = new Vector2(5f, 8f);
+
+    private JumpType currentJumpType = JumpType.NOJUMP;
+    private bool isGrounded;
+    private bool hasJumpedForCurrentNode = false;
+    private float targetSatisfactionRadius = 0.4f;
+
     public StateMachine currentState;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -24,11 +48,16 @@ public class NPC_Controller : MonoBehaviour
     {
         currentState = StateMachine.PATROL;
         currentNode = AStarManager.instance.FindNearestNode(this.transform.position);
+
+        if (rb == null) { rb = GetComponent<Rigidbody2D>(); }
+        if (col == null) { col = GetComponent<Collider2D>(); }
     }
 
     // Update is called once per frame
     void Update()
     {
+        //isGrounded = CheckIsGrounded();
+        
         switch (currentState)
         {
             case StateMachine.PATROL:
@@ -47,16 +76,36 @@ public class NPC_Controller : MonoBehaviour
             currentState = StateMachine.PATROL;
             currentNode = AStarManager.instance.FindNearestNode(this.transform.position);
             path.Clear();
+            currentJumpType = JumpType.NOJUMP;
         } else if (playerSeen && currentState != StateMachine.ENGAGE)
         {
             currentState = StateMachine.ENGAGE;
             path.Clear();
+            currentJumpType = JumpType.NOJUMP;
         }
         #endregion
-
-        CreatePath();
     }
 
+    void FixedUpdate() // physics calculations for moving npc done here, stick to tick rate
+    {
+        DoPath();
+    }
+
+    // private void OnCollisionEnter2D(Collision2D collision)
+    // {
+    //     if (!useWorldTagOnly || collision.gameObject.CompareTag("World"))
+    //     {
+    //         isGrounded = true;
+    //     }
+    // }
+
+    // private void OnCollisionExit2D(Collision2D collision)
+    // {
+    //     if (!useWorldTagOnly || collision.gameObject.CompareTag("World"))
+    //     {
+    //         isGrounded = false;
+    //     }
+    // }
 
     //Goal Node is nearest to player
     private Node previousTargetNode;
@@ -71,6 +120,11 @@ public class NPC_Controller : MonoBehaviour
             path.Clear();
             
             path = AStarManager.instance.GeneratePath(currentNode, AStarManager.instance.FindNearestNode(player.transform.position));
+
+            if (path.Count > 0)
+            {
+                EvaluateJumpType(currentNode, path[0]);
+            }
         }
     }
 
@@ -80,17 +134,98 @@ public class NPC_Controller : MonoBehaviour
         
     }
 
-    void CreatePath()
+    void DoPath()
     {
-        if(path.Count > 0)
+        if (path.Count > 0)
         {
-            transform.position = Vector3.MoveTowards(transform.position, new Vector3(path[0].transform.position.x, path[0].transform.position.y, -2), speed * Time.deltaTime);
+            Node targetNode = path[0];
 
-            if(Vector2.Distance(transform.position, path[0].transform.position) < 0.1f)
+            // 1. Trigger Jump Impulse once when entering a jump segment
+            if (currentJumpType != JumpType.NOJUMP)
+            {
+                if (!hasJumpedForCurrentNode)
+                {
+                    DoJump(currentJumpType);
+                    hasJumpedForCurrentNode = true;
+                }
+            }
+            else // Walk normally when on flat ground or slope
+            {
+                float direction = Mathf.Sign(targetNode.transform.position.x - transform.position.x);
+                rb.linearVelocity = new Vector2(direction * speed, rb.linearVelocity.y);
+            }
+
+            // 2. Separate X and Y proximity checks so vertical height doesn't block node removal
+            float xDist = Mathf.Abs(transform.position.x - targetNode.transform.position.x);
+            float yDist = Mathf.Abs(transform.position.y - targetNode.transform.position.y);
+
+            if (xDist < targetSatisfactionRadius && yDist < 1.2f)
             {
                 currentNode = path[0];
                 path.RemoveAt(0);
+
+                if (path.Count > 0)
+                {
+                    EvaluateJumpType(currentNode, path[0]);
+                }
+                else
+                {
+                    currentJumpType = JumpType.NOJUMP;
+                }
             }
         }
+        else
+        {
+            // Stop horizontal motion when path ends
+            rb.linearVelocity = new Vector2(0f, rb.linearVelocity.y);
+        }
+    }
+
+    void DoJump(JumpType j)
+    {
+        // Set linearVelocity directly for precise, repeatable jump trajectories
+        switch (j)
+        {
+            case JumpType.UPJUMP:
+                rb.linearVelocity = upJumpForce;
+                break;
+            case JumpType.LEFTJUMP:
+                rb.linearVelocity = leftJumpForce;
+                break;
+            case JumpType.RIGHTJUMP:
+                rb.linearVelocity = rightJumpForce;
+                break;
+        }
+    }
+
+    void EvaluateJumpType(Node source, Node destin)
+    {
+        hasJumpedForCurrentNode = false;
+
+        // Reduced height difference requirement from 0.5f to 0.2f
+        float yDiff = destin.transform.position.y - source.transform.position.y;
+        float xDiff = destin.transform.position.x - source.transform.position.x;
+
+        if (yDiff > 0.2f)
+        {
+            if (xDiff > 0.2f)
+            {
+                currentJumpType = JumpType.RIGHTJUMP;
+            }
+            else if (xDiff < -0.2f)
+            {
+                currentJumpType = JumpType.LEFTJUMP;
+            }
+            else
+            {
+                currentJumpType = JumpType.UPJUMP;
+            }
+        }
+        else
+        {
+            currentJumpType = JumpType.NOJUMP;
+        }
+
+        Debug.Log($"Evaluating segment from {source.name} to {destin.name} | JumpType: {currentJumpType}");
     }
 }
