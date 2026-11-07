@@ -1226,12 +1226,12 @@ MonoBehaviour:
   currentNode: {fileID: 0}
   path: []
   player: {fileID: 923700301}
-  speed: 3
+  speed: 2
   rb: {fileID: 868133555}
   useWorldTagOnly: 0
   upJumpForce: {x: 0, y: 10}
-  leftJumpForce: {x: -5, y: 8}
-  rightJumpForce: {x: 5, y: 8}
+  leftJumpForce: {x: -3, y: 5}
+  rightJumpForce: {x: 3, y: 5}
   currentState: 0
 --- !u!1001 &890064752
 PrefabInstance:
@@ -2182,7 +2182,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5704241151973992862, guid: b1a807839547ca5459d112b73740c19e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -4.98
+      value: -6.08
       objectReference: {fileID: 0}
     - target: {fileID: 5704241151973992862, guid: b1a807839547ca5459d112b73740c19e, type: 3}
       propertyPath: m_LocalPosition.y

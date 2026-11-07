@@ -7,7 +7,7 @@ public class Enemy : MonoBehaviour
     public Animator ZombieAnim;
 
     private bool playerInRange = false;
-    private bool isDead = false;
+    public bool isDead = false;
 
     private playerMovement playerScript;
 

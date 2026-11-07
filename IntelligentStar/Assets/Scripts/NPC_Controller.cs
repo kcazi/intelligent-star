@@ -9,7 +9,8 @@ public class NPC_Controller : MonoBehaviour
     public List<Node> path = new List<Node>();
 
     public playerMovement player;
-    public float speed = 3f;
+    public float speed = 2f;
+    private Enemy enemy;
 
     public enum StateMachine
     {
@@ -33,8 +34,8 @@ public class NPC_Controller : MonoBehaviour
 
     [Header("Jump Parameters")]
     public Vector2 upJumpForce = new Vector2(0f, 10f);
-    public Vector2 leftJumpForce = new Vector2(-5f, 8f);
-    public Vector2 rightJumpForce = new Vector2(5f, 8f);
+    public Vector2 leftJumpForce = new Vector2(-3f, 5f);
+    public Vector2 rightJumpForce = new Vector2(3f, 5f);
 
     private JumpType currentJumpType = JumpType.NOJUMP;
     private bool isGrounded;
@@ -51,11 +52,20 @@ public class NPC_Controller : MonoBehaviour
 
         if (rb == null) { rb = GetComponent<Rigidbody2D>(); }
         if (col == null) { col = GetComponent<Collider2D>(); }
+
+        enemy = gameObject.GetComponent<Enemy>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        // kills all movement when enemy dies
+        // if (enemy.isDead)
+        // {
+        //     Debug.Log("no move bc u die L<OL");
+        //     return;
+        // }
+
         //isGrounded = CheckIsGrounded();
         
         switch (currentState)
@@ -88,6 +98,13 @@ public class NPC_Controller : MonoBehaviour
 
     void FixedUpdate() // physics calculations for moving npc done here, stick to tick rate
     {
+        // kills all movement when enemy dies
+        if (enemy.isDead)
+        {
+            Debug.Log("no move bc u die L<OL");
+            return;
+        }
+
         DoPath();
     }
 
