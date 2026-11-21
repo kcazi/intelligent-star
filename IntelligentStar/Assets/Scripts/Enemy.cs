@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class Enemy : MonoBehaviour
@@ -6,28 +5,34 @@ public class Enemy : MonoBehaviour
     public float HP;
     public Animator ZombieAnim;
 
-    private bool playerInRange = false;
-    public bool isDead = false;
+    [Header("Attack Settings")]
+    public GameObject attackHitbox;
+    public float attackCooldown = 1.5f;
 
-    private playerMovement playerScript;
+    private float nextAttackTime = 0f;
+    private bool playerInRange = false;
+    private bool isAttacking = false;
+
+    public bool isDead = false;
 
     void Start()
     {
-        playerScript = GameObject.FindGameObjectWithTag("Player").GetComponent<playerMovement>();
+        if (attackHitbox != null)
+        {
+            attackHitbox.SetActive(false);
+        }
     }
 
     void Update()
     {
         if (isDead) return;
 
-        if (playerInRange)
+        if (playerInRange && Time.time >= nextAttackTime)
         {
             Attack();
-
         }
     }
 
-    // Detect player entering attack range
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
@@ -36,29 +41,51 @@ public class Enemy : MonoBehaviour
         }
     }
 
-    // Detect player leaving attack range
     private void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
-
-            ZombieAnim.ResetTrigger("isAttack");
         }
     }
 
     void Attack()
     {
-        
-        if (isDead) return;
+        if (isDead || isAttacking) return;
 
-        // Don't attack if already playing attack animation
-        if (ZombieAnim.GetCurrentAnimatorStateInfo(0).IsName("ZombieAttack"))
-            return;
+        isAttacking = true;
+
+        nextAttackTime = Time.time + attackCooldown;
 
         ZombieAnim.SetTrigger("isAttack");
+    }
 
-        playerScript.health -= 1;
+    // Called by Animation Event
+    public void EnableAttackHitbox()
+    {
+        if (isDead) return;
+
+        if (attackHitbox != null)
+        {
+            attackHitbox.SetActive(true);
+        }
+    }
+
+    // Called by Animation Event
+    public void DisableAttackHitbox()
+    {
+        if (attackHitbox != null)
+        {
+            attackHitbox.SetActive(false);
+        }
+    }
+
+    // Called at the end of attack animation
+    public void EndAttack()
+    {
+        DisableAttackHitbox();
+
+        isAttacking = false;
     }
 
     public void TakeDamage(float dmg)
@@ -79,7 +106,11 @@ public class Enemy : MonoBehaviour
 
         isDead = true;
         playerInRange = false;
+        isAttacking = false;
 
+        DisableAttackHitbox();
+
+        ZombieAnim.ResetTrigger("isAttack");
         ZombieAnim.SetBool("isDead", true);
 
         gameObject.layer = LayerMask.NameToLayer("DeadEnemy");

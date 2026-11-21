@@ -12,6 +12,15 @@ public class Gun : MonoBehaviour
 
     public GameObject bullet;
 
+    [Header("Bullet Shell Settings")]
+    public GameObject shellPrefab;
+    public Transform shellEjectPoint;
+
+    public float shellEjectForce = 1f;
+    public float shellUpwardForce = 1f;
+    public float shellSpin = 300f;
+    public float shellLifetime = 2f;
+
     public bool canFire;
     public float timer;
     public float shotTime;
@@ -66,11 +75,43 @@ public class Gun : MonoBehaviour
         
         if (Mouse.current.leftButton.isPressed && canFire)
         {
-            //Debug.Log("Shooting");
             canFire = false;
+
+            // Fire bullet
             Instantiate(bullet, transform.position, Quaternion.identity);
 
+            // Eject bullet shell
+            EjectShell();
         }
 
+    }
+
+    private void EjectShell()
+    {
+        if (shellPrefab == null || shellEjectPoint == null)
+            return;
+
+        GameObject shell = Instantiate(shellPrefab, shellEjectPoint.position, Quaternion.identity);
+
+        Rigidbody2D shellRb = shell.GetComponent<Rigidbody2D>();
+
+        if (shellRb != null)
+        {
+            // Determine which direction the player is facing
+            float direction = playerRenderer.flipX ? 1f : -1f;
+
+            // Add random variation to shell movement
+            float randomHorizontal = UnityEngine.Random.Range(-1.5f, 1.5f);
+            float randomVertical = UnityEngine.Random.Range(-1f, 1f);
+            float randomSpin = UnityEngine.Random.Range(150f, 450f);
+
+            // Launch shell backward and upward
+            shellRb.linearVelocity = new Vector2(direction * shellEjectForce + randomHorizontal, shellUpwardForce + randomVertical);
+
+            // Give each shell a slightly different spin
+            shellRb.angularVelocity = direction * randomSpin;
+        }
+
+        Destroy(shell, shellLifetime);
     }
 }

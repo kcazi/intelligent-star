@@ -32,6 +32,35 @@ public class playerMovement : MonoBehaviour
     // Track if the player is actively climbing right now
     private bool isClimbing;
 
+    [Header("Damage Feedback")]
+    public float flashDuration = 0.15f;
+
+    private SpriteRenderer playerSprite;
+    private Color originalColor;
+
+    private SpriteRenderer gunSprite;
+    private Color originalGunColor;
+
+    [Header("Knockback Settings")]
+    public float knockbackForceX = 3f;
+    public float knockbackForceY = 2f;
+    public float knockbackDuration = 0.1f;
+
+    private float knockbackTimer = 0f;
+
+    [Header("Health Regeneration")]
+    public int maxHealth = 5;
+    public float regenDelay = 5f;
+    public float regenInterval = 1f;
+
+    private float lastDamageTime;
+    private float nextRegenTime;
+
+    [Header("Damage Immunity")]
+    public float immunityDuration = 0f;
+
+    private float nextAllowedDamageTime = 0f;
+
     void Start()
     {
         gravity = gravityBase; // Set active gravity to base on start
@@ -42,6 +71,19 @@ public class playerMovement : MonoBehaviour
         // find animator on this object/children
         if (playerAnim == null) 
             playerAnim = GetComponentInChildren<Animator>();
+
+        playerSprite = GetComponent<SpriteRenderer>();
+        originalColor = playerSprite.color;
+
+        gunSprite = arms.GetComponent<SpriteRenderer>();
+
+        if (gunSprite != null)
+        {
+            originalGunColor = gunSprite.color;
+        }
+
+        lastDamageTime = Time.time;
+        nextRegenTime = Time.time + regenDelay;
     }
 
     void Update()
@@ -53,6 +95,8 @@ public class playerMovement : MonoBehaviour
         {
             playerDie();
         }
+
+        RegenerateHealth();
 
         #region Ladder Climbing Setup
         // Check if the player wants to start climbing while near a ladder
@@ -142,8 +186,19 @@ public class playerMovement : MonoBehaviour
             playerAnim.speed = 1f; 
         }
 
-        // Apply velocities back to the Rigidbody
-        rb.linearVelocity = new Vector2(direction * moveSpeed, verticalVelocity);
+        // Count down the knockback timer
+        if (knockbackTimer > 0f)
+        {
+            knockbackTimer -= Time.deltaTime;
+
+            // Preserve horizontal knockback velocity
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, verticalVelocity);
+        }
+        else
+        {
+            // Normal movement
+            rb.linearVelocity = new Vector2(direction * moveSpeed, verticalVelocity);
+        }
         #endregion
 
         // update animations
@@ -217,7 +272,81 @@ public class playerMovement : MonoBehaviour
             playerAnim.speed = 1f; // Restore animator speed
             canClimb = false;
             isClimbing = false;
-            gravity = gravityBase; // Safely restore original base gravity
+            gravity = gravityBase; // restore original base gravity
+        }
+    }
+
+    // IMMUNITY FRAME STUFF SHOULD WORK, I WAS UNSURE HOW TO TEST IT IN GAME
+    public void TakeDamage(int damage, Vector2 attackerPosition)
+    {
+        // Don't take damage if already dead
+        if (health <= 0 || playerAnim.GetBool("isDead"))
+            return;
+
+        // Ignore damage during immunity frames
+        if (Time.time < nextAllowedDamageTime)
+            return;
+
+        // Apply damage
+        health -= damage;
+
+        // Start immunity period
+        nextAllowedDamageTime = Time.time + immunityDuration;
+
+        // Reset health regeneration timer
+        lastDamageTime = Time.time;
+        nextRegenTime = Time.time + regenDelay;
+
+        // Flash player and gun red
+        StopCoroutine(nameof(DamageFlash));
+        StartCoroutine(DamageFlash());
+
+        // Determine knockback direction
+        float knockbackDirection = transform.position.x >= attackerPosition.x ? 1f : -1f;
+
+        // Apply knockback
+        rb.linearVelocity = new Vector2(knockbackDirection * knockbackForceX, knockbackForceY);
+
+        // Temporarily disable normal horizontal movement
+        knockbackTimer = knockbackDuration;
+    }
+
+    private System.Collections.IEnumerator DamageFlash()
+    {
+        // Turn the player red
+        playerSprite.color = Color.red;
+
+        // Turn the gun red
+        if (gunSprite != null)
+        {
+            gunSprite.color = Color.red;
+        }
+
+        // Wait briefly
+        yield return new WaitForSeconds(flashDuration);
+
+        // Restore original player color
+        playerSprite.color = originalColor;
+
+        // Restore original gun color
+        if (gunSprite != null)
+        {
+            gunSprite.color = originalGunColor;
+        }
+    }
+
+    void RegenerateHealth()
+    {
+        if (health <= 0 || health >= maxHealth)
+            return;
+
+        if (Time.time - lastDamageTime < regenDelay)
+            return;
+
+        if (Time.time >= nextRegenTime)
+        {
+            health = Mathf.Min(health + 1, maxHealth);
+            nextRegenTime = Time.time + regenInterval;
         }
     }
 }
