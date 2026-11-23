@@ -3,6 +3,8 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public float HP;
+    public float speed;
+
     public Animator ZombieAnim;
 
     [Header("Attack Settings")]
@@ -117,4 +119,5 @@ public class Enemy : MonoBehaviour
 
         Destroy(gameObject, 2f);
     }
+
 }

@@ -9,7 +9,6 @@ public class NPC_Controller : MonoBehaviour
     public List<Node> path = new List<Node>();
 
     public playerMovement player;
-    public float speed = 2f;
     private Enemy enemy;
 
     public enum StateMachine
@@ -169,7 +168,7 @@ public class NPC_Controller : MonoBehaviour
             else // Walk normally when on flat ground or slope
             {
                 float direction = Mathf.Sign(targetNode.transform.position.x - transform.position.x);
-                rb.linearVelocity = new Vector2(direction * speed, rb.linearVelocity.y);
+                rb.linearVelocity = new Vector2(direction * enemy.speed, rb.linearVelocity.y);
             }
 
             // 2. Separate X and Y proximity checks so vertical height doesn't block node removal
