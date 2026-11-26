@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class playerMovement : MonoBehaviour
 {
@@ -348,5 +349,16 @@ public class playerMovement : MonoBehaviour
             health = Mathf.Min(health + 1, maxHealth);
             nextRegenTime = Time.time + regenInterval;
         }
+    }
+
+    public IEnumerator speedUp(float duration)
+    {
+        float originalSpeed = moveSpeedBase;
+
+        moveSpeedBase *= 2f;
+
+        yield return new WaitForSeconds(duration);
+
+        moveSpeedBase = originalSpeed;
     }
 }

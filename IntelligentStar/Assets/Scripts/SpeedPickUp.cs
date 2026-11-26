@@ -10,6 +10,9 @@ public class SpeedPickUp : BasePickUp
 
         base.OnPickUp();
 
-        //TODO: Speeds up charcter
+        player.StartCoroutine(player.speedUp(3f));
+
+        Destroy(gameObject);
+
     }
 }
