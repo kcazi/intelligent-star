@@ -255,10 +255,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   HP: 5
+  speed: 0
   ZombieAnim: {fileID: 2046800373901107584}
   attackHitbox: {fileID: 704170438677464546}
   attackCooldown: 1.5
   isDead: 0
+  drop: {fileID: 6176696324095476110, guid: 98b736e8400ed1a4b82ceb0b44df11c1, type: 3}
+  WM: {fileID: 0}
 --- !u!61 &2421272438213186560
 BoxCollider2D:
   m_ObjectHideFlags: 0

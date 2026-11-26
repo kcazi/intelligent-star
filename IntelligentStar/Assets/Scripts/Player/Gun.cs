@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class Gun : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class Gun : MonoBehaviour
     public bool canFire;
     public float timer;
     public float shotTime;
+    public float baseDamage = 1;
 
     private void Awake()
     {
@@ -113,5 +115,14 @@ public class Gun : MonoBehaviour
         }
 
         Destroy(shell, shellLifetime);
+    }
+
+    public IEnumerator instaKill(float duration)
+    {
+        baseDamage += 10f;
+
+        yield return new WaitForSeconds(duration);
+
+        baseDamage -= 10f;
     }
 }

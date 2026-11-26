@@ -7,7 +7,8 @@ public class BulletScript : MonoBehaviour
     private Camera mainCam;
     private Rigidbody2D rb;
     public float force;
-    public int damage;
+    public float damage;
+    public Gun G;
     private float bulletTimer = 3.0f;
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -21,6 +22,8 @@ public class BulletScript : MonoBehaviour
         rb.linearVelocity = new Vector2(direction.x, direction.y).normalized * force;
         float rot = Mathf.Atan2(rotation.y, rotation.x) * Mathf.Rad2Deg;
         transform.rotation = Quaternion.Euler(0, 0, rot + 180);
+        G = FindFirstObjectByType<Gun>();
+        damage = G.baseDamage;
     }
 
     // Update is called once per frame
@@ -38,7 +41,7 @@ public class BulletScript : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        Debug.Log("Bullet Collission BABABAYAYYY");
+        //Debug.Log("Bullet Collission BABABAYAYYY");
         if (collision.gameObject.TryGetComponent<Enemy>(out Enemy enemy))
         {
             collision.gameObject.GetComponent<Enemy>().TakeDamage(damage);

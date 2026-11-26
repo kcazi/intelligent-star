@@ -17,12 +17,17 @@ public class Enemy : MonoBehaviour
 
     public bool isDead = false;
 
+    public GameObject drop;
+
+    public WaveManager WM;
+
     void Start()
     {
         if (attackHitbox != null)
         {
             attackHitbox.SetActive(false);
         }
+        WM = FindFirstObjectByType<WaveManager>(); 
     }
 
     void Update()
@@ -116,6 +121,15 @@ public class Enemy : MonoBehaviour
         ZombieAnim.SetBool("isDead", true);
 
         gameObject.layer = LayerMask.NameToLayer("DeadEnemy");
+
+        if (Random.Range(1,5) == 1)
+        {
+            Debug.Log("item dropped");
+
+            GameObject item = Instantiate(drop, this.transform.position, Quaternion.identity);
+        }
+
+        WM.RemoveZombie(gameObject);
 
         Destroy(gameObject, 2f);
     }

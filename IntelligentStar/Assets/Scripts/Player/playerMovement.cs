@@ -359,6 +359,23 @@ public class playerMovement : MonoBehaviour
 
         yield return new WaitForSeconds(duration);
 
-        moveSpeedBase = originalSpeed;
+        //moveSpeedBase = originalSpeed;
+        moveSpeedBase /= 2f;
+    }
+
+    public IEnumerator maxHealthUp(float duration)
+    {
+        //TODO: Gain +2 max HP, Regen to max HP lose after some time
+        maxHealth += 2;
+        health = maxHealth;
+        
+        yield return new WaitForSeconds(duration);
+
+        maxHealth -= 2;
+
+        if (health > maxHealth)
+        {
+            health = maxHealth;
+        }
     }
 }
